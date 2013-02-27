@@ -7,12 +7,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 public class Stage extends JPanel {
 
-	Robot r0 = new Robot(10,10, this, "R2-D2", 1);
-	Robot r1 = new Robot(500,10, this, "C3-PO", 1);
-	Robot r2 = new Robot(500,450, this, "Megatron", 20);
-	Robot r3 = new Robot(10, 450, this, "T-1000", 2);
-	Robot r4 = new Robot(250, 250, this, "Optimus Prime", 4);
-	Food f = new Food(300,300,500, this);
+	
 	boolean painting;
 	int foodIndex = 0;
 	
@@ -32,7 +27,7 @@ public class Stage extends JPanel {
 			Random rY = new Random();
 			int initX = rX.nextInt(this.getWidth());
 			int initY = rY.nextInt(this.getHeight());
-			robots.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1));
+			robots.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1, 1));
 		}
 		// Add all robots to a collection.
 		this.setBackground(Color.WHITE);
@@ -58,7 +53,7 @@ public class Stage extends JPanel {
 	
 	public Robot getRobot()
 	{
-		return r0;
+		return null;
 	}
 	
 	public Entity getObjectInRange(int x1, int x2, int y1, int y2)
@@ -100,7 +95,7 @@ public class Stage extends JPanel {
 	public void insertRobot(String name)
 	{
 		Random rand = new Random();
-		Robot r = new Robot(10 + rand.nextInt(500), 10 + rand.nextInt(440), this,name, 1 + rand.nextInt(5));
+		Robot r = new Robot(10 + rand.nextInt(500), 10 + rand.nextInt(440), this,name, 1 + rand.nextInt(5), 10);
 		r.activateRobot();
 		robots.add(r);
 	}

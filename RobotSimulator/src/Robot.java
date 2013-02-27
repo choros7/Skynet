@@ -39,7 +39,7 @@ public class Robot extends JPanel implements Entity {
 	 * @param name Name of the robot
 	 * @param energyDecrement Robot's energy usages
 	 */
-	public Robot(int x, int y, Stage parent, String name, int energyDecrement) {
+	public Robot(int x, int y, Stage parent, String name, int energyDecrement, int perception) {
 		this.setBounds(x,y,30,30);
 		thread = new RobotConsciousness(this);
 		super.setSize(100,100);
@@ -49,7 +49,7 @@ public class Robot extends JPanel implements Entity {
 		this.isNear = false;
 		this.energy = 10000;
 		this.energyDecrement = energyDecrement;
-		this.perception = 100;
+		this.perception = perception;
 		tempMemory = new ArrayList<Entity>();
 	}
 	
@@ -182,5 +182,14 @@ public class Robot extends JPanel implements Entity {
 	public int getEnergy()
 	{
 		return energy;
+	}
+	
+	public void checkInteractions(){
+		for(Entity r: tempMemory){
+			//here I am trying to figure out the algorithm for forgetting...
+			if(this.getX() + this.getPerception() > ((Robot)r).getX()){
+				
+			}
+		}
 	}
 }
