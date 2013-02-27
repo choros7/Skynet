@@ -24,8 +24,14 @@ public class Food extends Component implements Entity {
 		this.showDetails = false;
 		this.stage = stage;
 		try {
-			image = ImageIO.read(new File("C:\\Users\\admin\\Desktop\\cog.png"));
+			//Windows: 
+			//
+			if(System.getProperty("os.name").equalsIgnoreCase("Linux"))
+				image = ImageIO.read(new File("/home/dreamer/Pictures/Food.png"));
+			else
+				image = ImageIO.read(new File("C:\\Users\\admin\\Desktop\\cog.png"));
 		} catch (IOException e) {
+			
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

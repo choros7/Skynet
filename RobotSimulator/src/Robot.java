@@ -28,6 +28,14 @@ public class Robot extends JPanel implements Entity {
 	// How far the robot can see an event.
 	private boolean showDetails;
 	
+	/**
+	 * 
+	 * @param x location x
+	 * @param y location y
+	 * @param parent where the robot will be drawn
+	 * @param name Name of the robot
+	 * @param energyDecrement Robot's energy usages
+	 */
 	public Robot(int x, int y, Stage parent, String name, int energyDecrement) {
 		this.setBounds(x,y,30,30);
 		thread = new RobotConsciousness(this);
@@ -46,10 +54,14 @@ public class Robot extends JPanel implements Entity {
 		if(this.energy > 0) {
 			g.setColor(robotColor);
 			// This red / green circle is the robot.
-			try {
-				g.drawImage(ImageIO.read(new File("C:\\Users\\admin\\Desktop\\robot.gif")),this.getLocation().x, this.getLocation().y, 30, 30, null);
+			try{
+				if(System.getProperty("os.name").equalsIgnoreCase("Linux"))
+					g.drawImage(ImageIO.read(new File("/home/dreamer/Pictures/Robo.png")), this.getLocation().x, this.getLocation().y, 30, 30, null);
+				else
+					g.drawImage(ImageIO.read(new File("C:\\Users\\admin\\Desktop\\robot.gif")),this.getLocation().x, this.getLocation().y, 30, 30, null);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		

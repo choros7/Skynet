@@ -7,7 +7,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 public class Stage extends JPanel {
 
-	Robot r = new Robot(10,10, this, "R2-D2", 1);
+	Robot r0 = new Robot(10,10, this, "R2-D2", 1);
 	Robot r1 = new Robot(500,10, this, "C3-PO", 1);
 	Robot r2 = new Robot(500,450, this, "Megatron", 20);
 	Robot r3 = new Robot(10, 450, this, "T-1000", 2);
@@ -26,19 +26,21 @@ public class Stage extends JPanel {
 		robots = new ArrayList<Entity>();
 		this.setSize(1000,500);
 		robots.add(f);
-		robots.add(r);
+		robots.add(r0);
 		robots.add(r1);
 		robots.add(r2);
 		robots.add(r3);
+		robots.add(new Robot(25,25, this, "Doomsday", 1));
 		robots.add(r4);
 		
 		// Add all robots to a collection.
 		this.setBackground(Color.WHITE);
-		r.activateRobot();
-		r1.activateRobot();
-		r2.activateRobot();
-		r3.activateRobot();
-		r4.activateRobot();
+		
+		//Activating the robots
+		for(Entity r: robots){
+			if(r instanceof Robot)
+				((Robot) r).activateRobot();
+		}
 		this.addMouseListener(new StageMouseListener(this));
 	}
 	public void paint(Graphics g)
@@ -55,7 +57,7 @@ public class Stage extends JPanel {
 	
 	public Robot getRobot()
 	{
-		return r;
+		return r0;
 	}
 	
 	public Entity getObjectInRange(int x1, int x2, int y1, int y2)
