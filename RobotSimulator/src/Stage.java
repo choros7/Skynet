@@ -25,14 +25,15 @@ public class Stage extends JPanel {
 		this.world = world;
 		robots = new ArrayList<Entity>();
 		this.setSize(1000,500);
-		robots.add(f);
-		robots.add(r0);
-		robots.add(r1);
-		robots.add(r2);
-		robots.add(r3);
-		robots.add(new Robot(25,25, this, "Doomsday", 1));
-		robots.add(r4);
 		
+		//Adding a number of robots to the array...
+		for(int i = 1; i < 20; i++){
+			Random rX = new Random();
+			Random rY = new Random();
+			int initX = rX.nextInt(this.getWidth());
+			int initY = rY.nextInt(this.getHeight());
+			robots.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1));
+		}
 		// Add all robots to a collection.
 		this.setBackground(Color.WHITE);
 		

@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,6 +29,8 @@ public class Robot extends JPanel implements Entity {
 	// How far the robot can see an event.
 	private boolean showDetails;
 	
+	private ArrayList<Entity> tempMemory; 
+	
 	/**
 	 * 
 	 * @param x location x
@@ -47,6 +50,7 @@ public class Robot extends JPanel implements Entity {
 		this.energy = 10000;
 		this.energyDecrement = energyDecrement;
 		this.perception = 100;
+		tempMemory = new ArrayList<Entity>();
 	}
 	
 	public void paint(Graphics g)
@@ -141,10 +145,23 @@ public class Robot extends JPanel implements Entity {
 	
 	@Override
 	public void interact(Entity other) {
+		boolean knowYou = false;
 		if(other instanceof Robot)
 		{
-			Robot r = (Robot)other;
-			System.out.println("Good morning " + r.getName());
+			//Search the memory for known robots
+			for(Entity r: tempMemory){
+				if(other.equals(r));
+				knowYou = true;
+				//System.out.println(this.getName() + ": I know " + ((Robot) other).getName());
+				break;
+			}
+			//If I don't know you... do something.
+			if(!knowYou){
+				System.out.println("Good morning " + ((Robot) other).getName());
+				tempMemory.add(other);
+			}
+			
+			//Robot r = (Robot)other;
 		}
 	}
 	@Override
