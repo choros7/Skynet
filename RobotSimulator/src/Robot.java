@@ -89,7 +89,7 @@ public class Robot extends JPanel implements Entity {
 	 * @param y2
 	 * @return
 	 */
-	public Entity getNearRobots(int x1, int x2, int y1, int y2)
+	public ArrayList<Entity> getNearRobots(int x1, int x2, int y1, int y2)
 	{
 		return parent.getObjectInRange(x1, x2, y1, y2);
 	}
@@ -157,7 +157,7 @@ public class Robot extends JPanel implements Entity {
 			}
 			//If I don't know you... do something.
 			if(!knowYou){
-				System.out.println("Good morning " + ((Robot) other).getName());
+				System.out.println(name + " says Good morning to" + ((Robot) other).getName());
 				tempMemory.add(other);
 			}
 			
@@ -184,12 +184,20 @@ public class Robot extends JPanel implements Entity {
 		return energy;
 	}
 	
-	public void checkInteractions(){
+	public void checkInteractions(ArrayList<Entity> entitiesInRange){
+		ArrayList<Entity> newMemory = new ArrayList<Entity>();
 		for(Entity r: tempMemory){
 			//here I am trying to figure out the algorithm for forgetting...
-			if(this.getX() + this.getPerception() > ((Robot)r).getX()){
-				
+			for(Entity e : entitiesInRange)
+			{
+				if(e == r)
+				{
+					// If e and r are the same object, it means we shouldn't forget e.
+					newMemory.add(e);
+				}
 			}
 		}
+		tempMemory = newMemory;
+		// Update our memory with the objects that are still within our perception radius.
 	}
 }

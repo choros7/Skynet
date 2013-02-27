@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class RobotConsciousness extends Thread {
@@ -58,14 +59,14 @@ public class RobotConsciousness extends Thread {
 			{
 				dx *= -1;
 				// Reverse X direction if reaching boundaries.
-				// Add 5 to speed to ensure they get out of the boundary.
+				
 			}
 			
 			if(robotY >= 450 || robotY <= 0)
 			{
 				dy *= -1;
 				// Reverse Y direction if reaching boundaries.
-				// Add 5 to speed to ensure they get out of the bounday.
+				
 			}
 			// Set the new location of the robot.
 			
@@ -94,49 +95,48 @@ public class RobotConsciousness extends Thread {
 	
 	public void checkProximity(int robotX, int robotY)
 	{
-		// Will grab a robot if it is nearby. In real program, this will be an array.
-		Entity e = robot.getNearRobots(robotX - robot.getPerception() / 2, robotX + robot.getPerception() / 2, robotY - robot.getPerception() / 2, robotY + robot.getPerception() / 2);
-		
-		if(e instanceof Robot) {
-			Robot r = (Robot)e;
-			if(r != null && !r.equals(robot))
-			{
-				// If r is null, no robot was there. if r.equals(robot) then we're just looking at ourselves.
-				if(r.isAlive()) {
-					// Apply changes.
-					robot.setIsNear(true);
-					r.setIsNear(true);
-					robot.interact(r);
-					r.interact(robot);
+		// Will grab all entities if they are nearby
+		ArrayList<Entity> entities = robot.getNearRobots(robotX - robot.getPerception() / 2, robotX + robot.getPerception() / 2, robotY - robot.getPerception() / 2, robotY + robot.getPerception() / 2);
+		robot.checkInteractions(entities);
+		for (int x = 0; x < entities.size(); x++) {
+			Entity e = entities.get(x);
+			
+			// Cycle through all entities nearby.
+			if (e instanceof Robot) {
+				Robot r = (Robot) e;
+				if (r != null && !r.equals(robot)) {
+					// If r is null, no robot was there. if r.equals(robot) then
+					// we're just looking at ourselves.
+					if (r.isAlive()) {
+						// Apply changes.
+						robot.setIsNear(true);
+						r.setIsNear(true);
+						robot.interact(r);
+						r.interact(robot);
+					} else {
+						// doesn't work yet. Couldn't be bothered.
+						// Supposed to turn orange when a robot gets close to a
+						// dead robot.
+						robot.setColor(Color.ORANGE);
+					}
+				} else {
+					// If robots are not nearby ensure the colour value is
+					// correct.
+					robot.setIsNear(false);
 				}
-				else
-				{
-					// doesn't work yet. Couldn't be bothered.
-					// Supposed to turn orange when a robot gets close to a dead robot.
-					robot.setColor(Color.ORANGE);
+			} else if (e instanceof Food) {
+				Food f = (Food) e;
+				if (f.getStoredEnergy() > 0) {
+					f.interact(robot);
+					if (robot.getEnergy() > previousEnergy) {
+						robot.setColor(Color.PINK);
+						dx = 0;
+						dy = 0;
+						// Robot is still feeding so will stay still.
+					}
 				}
-			}
-			else
-			{
-				// If robots are not nearby ensure the colour value is correct.
-				robot.setIsNear(false);
 			}
 		}
-		else if(e instanceof Food)
-		{
-			Food f = (Food)e;
-			if(f.getStoredEnergy() > 0) {
-				f.interact(robot);
-				if(robot.getEnergy() > previousEnergy)
-				{
-					robot.setColor(Color.PINK);
-					dx = 0;
-					dy = 0;
-					// Robot is still feeding so will stay still.
-				}
-			}
-		}
-		
 	}
 	
 	public void changeDirection(int stepCount)

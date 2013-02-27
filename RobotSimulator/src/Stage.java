@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -27,7 +28,7 @@ public class Stage extends JPanel {
 			Random rY = new Random();
 			int initX = rX.nextInt(this.getWidth());
 			int initY = rY.nextInt(this.getHeight());
-			robots.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1, 1));
+			robots.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1, 50));
 		}
 		// Add all robots to a collection.
 		this.setBackground(Color.WHITE);
@@ -56,8 +57,9 @@ public class Stage extends JPanel {
 		return null;
 	}
 	
-	public Entity getObjectInRange(int x1, int x2, int y1, int y2)
+	public ArrayList<Entity> getObjectInRange(int x1, int x2, int y1, int y2)
 	{
+		ArrayList<Entity>robotsInRange = new ArrayList<Entity>();
 		for(int x = 0; x < robots.size(); x++)
 		{
 			// Can't use foreach. Gives a nullpointerException for some reason. This is just as good.
@@ -66,13 +68,14 @@ public class Stage extends JPanel {
 			// Grabs the robot's location, and tests it against the robot's perception.
 			if((p.x >= x1 && p.x <= x2) && (p.y >= y1 && p.y <= y2))
 			{
+				
 				// If the robot is within the current robot's perceptive radius,
 				// then return the robot.
-				return r;
+				robotsInRange.add(r);
 			}
 		}
 		// If no robot is found, return null.
-		return null;
+		return robotsInRange;
 	}
 	
 	public void showEntityAtCoordsDetails(int x, int y)
