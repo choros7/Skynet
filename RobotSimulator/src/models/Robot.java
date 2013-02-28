@@ -35,6 +35,7 @@ public class Robot extends JPanel implements Entity {
 	// How far the robot can see an event.
 	private boolean showDetails;
 	
+	private int maxEnergy;
 	private ArrayList<Entity> tempMemory; 
 	
 	/**
@@ -54,6 +55,7 @@ public class Robot extends JPanel implements Entity {
 		this.name = name;
 		this.isNear = false;
 		this.energy = 10000;
+		this.maxEnergy = 10000;
 		this.energyDecrement = energyDecrement;
 		this.perception = perception;
 		tempMemory = new ArrayList<Entity>();
@@ -75,11 +77,11 @@ public class Robot extends JPanel implements Entity {
 				e.printStackTrace();
 			}
 		
-			g.setColor(Color.BLACK);
+			g.setColor(robotColor);
 			if(showDetails)
 			{
 				// Prints out the robot's statistics.
-				g.setColor(Color.BLACK);
+				g.setColor(robotColor);
 				g.drawString("Name: " + name, this.getLocation().x + 20, this.getLocation().y - 15);
 				g.drawString("Energy Left:"  + energy, this.getLocation().x + 20, this.getLocation().y - 5);
 				g.drawString("X: " + this.getLocation().x + " Y: " + this.getLocation().y, this.getLocation().x + 20, this.getLocation().y + 5);
@@ -115,11 +117,17 @@ public class Robot extends JPanel implements Entity {
 		this.isNear = value;
 		// Sets the new "isNear" value.
 		if(isNear)
-			this.robotColor = Color.red;
+			this.robotColor = Color.blue;
 			// Sets the robot's color if a robot is near.
-		else
-			this.robotColor = Color.green;
+		else{
+			if(this.getEnergy() < this.maxEnergy / 2)
+				this.robotColor = Color.orange;
+			else if(this.getEnergy() < this.maxEnergy / 10)
+				this.robotColor = Color.red;
+			else
+				this.robotColor = Color.green;
 			// Sets the robots color if a robot is not near.
+		}
 	}
 	
 	public void decrementEnergy()
@@ -173,6 +181,17 @@ public class Robot extends JPanel implements Entity {
 	@Override
 	public int getPriority() {
 		return 0;
+	}
+	
+	public int getMaxEnergy(){
+		return this.maxEnergy;
+	}
+	
+	public boolean foodNeed(){
+		if(this.energy < this.maxEnergy / 2)
+			return true;
+		else
+			return false;
 	}
 	
 	public void addEnergy(int amountToAdd)

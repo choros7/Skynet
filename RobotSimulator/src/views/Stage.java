@@ -42,7 +42,7 @@ public class Stage extends JPanel {
 			Random rY = new Random();
 			int initX = rX.nextInt(this.getWidth());
 			int initY = rY.nextInt(this.getHeight());
-			entities.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1, 50));
+			entities.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1, 100));
 		}
 		// Add all entities to a collection.
 		//Activating the entities
