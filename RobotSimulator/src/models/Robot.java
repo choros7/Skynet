@@ -1,3 +1,5 @@
+package models;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -9,6 +11,10 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import views.Stage;
+
+import controllers.RobotConsciousness;
 public class Robot extends JPanel implements Entity {
 	
 	private RobotConsciousness thread;

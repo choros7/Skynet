@@ -1,5 +1,9 @@
+package controllers;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
+import views.Stage;
 
 
 public class StageMouseListener implements MouseListener {

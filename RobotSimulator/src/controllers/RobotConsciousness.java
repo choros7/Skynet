@@ -1,7 +1,13 @@
+package controllers;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
+
+import models.Entity;
+import models.Food;
+import models.Robot;
 
 public class RobotConsciousness extends Thread {
 

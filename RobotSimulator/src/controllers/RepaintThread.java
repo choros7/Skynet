@@ -1,3 +1,6 @@
+package controllers;
+import views.Stage;
+
 
 public class RepaintThread extends Thread {
 
