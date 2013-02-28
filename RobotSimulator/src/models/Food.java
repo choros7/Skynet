@@ -1,3 +1,5 @@
+package models;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -6,6 +8,9 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import views.Stage;
+
 
 
 public class Food extends Component implements Entity {
