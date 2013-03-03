@@ -42,7 +42,7 @@ public class Stage extends JPanel {
 			Random rY = new Random();
 			int initX = rX.nextInt(this.getWidth());
 			int initY = rY.nextInt(this.getHeight());
-			entities.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1, 100));
+			entities.add(new Robot(initX, initY, this, "R" + Integer.toString(i), 1, 50));
 		}
 		// Add all entities to a collection.
 		//Activating the entities
@@ -70,7 +70,7 @@ public class Stage extends JPanel {
 	
 	public ArrayList<Entity> getObjectInRange(int x1, int x2, int y1, int y2)
 	{
-		ArrayList<Entity>entitiesInRange = new ArrayList<Entity>();
+		ArrayList<Entity> entitiesInRange = new ArrayList<Entity>();
 		for(int x = 0; x < entities.size(); x++)
 		{
 			// Can't use foreach. Gives a nullpointerException for some reason. This is just as good.

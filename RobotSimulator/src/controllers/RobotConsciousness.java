@@ -26,8 +26,9 @@ public class RobotConsciousness extends Thread {
 	int previousEnergy;
 	// The robot's energy level on it's last iteration. For feeding.
 	Robot currentInteraction;
-
 	// The robot this robot is currently interacting with.
+	Entity goal;
+	// When a goal is found to move to, it is set here.
 
 	public RobotConsciousness(Robot r) {
 		this.robot = r;
@@ -38,11 +39,13 @@ public class RobotConsciousness extends Thread {
 		changeDirection(0);
 		// Sets initial direction for the robots.
 		previousEnergy = robot.getEnergy();
+		goal = null;
 	}
 
 	public void run() {
 		int stepCount = 0;
 
+		
 		decisionGapX = 200 + randNum.nextInt(200);
 		decisionGapY = 200 + randNum.nextInt(200);
 
@@ -55,9 +58,15 @@ public class RobotConsciousness extends Thread {
 			// Apply the necessary changes if another robot is nearby.
 			stepCount++;
 
-			changeDirection(stepCount);
+			if(!setEntityGoal(robot.getLocation().x, robot.getLocation().y))
+			{
+				// if no goal was found, walk in random direction.
+				changeDirection(stepCount);
+			}
+			
 			checkProximity(robotX, robotY);
 
+			
 			// Change direction if timer is up.
 			if ((robotX >= 950 || robotX <= 0)) {
 				dx *= -1;
@@ -95,13 +104,17 @@ public class RobotConsciousness extends Thread {
 	}
 
 	public void checkProximity(int robotX, int robotY) {
-		// Will grab all entities if they are nearby
-		ArrayList<Entity> entities = robot.getNearRobots(
-				robotX - robot.getPerception() / 2,
-				robotX + robot.getPerception() / 2,
-				robotY - robot.getPerception() / 2,
-				robotY + robot.getPerception() / 2);
+		// Will grab all entities that can be interacted with.
+		int perceptionBoundary = robot.getPerception() / 2;
+		
+		ArrayList<Entity> entities = robot.getNearEntities(
+										robotX - perceptionBoundary,
+										robotX + perceptionBoundary,
+										robotY - perceptionBoundary,
+										robotY + perceptionBoundary);
+		
 		robot.checkInteractions(entities);
+		
 		for (int x = 0; x < entities.size(); x++) {
 			Entity e = entities.get(x);
 
@@ -117,19 +130,19 @@ public class RobotConsciousness extends Thread {
 						r.setIsNear(true);
 						robot.interact(r);
 						r.interact(robot);
-					} else {
-						// doesn't work yet. Couldn't be bothered.
-						// Supposed to turn orange when a robot gets close to a
-						// dead robot.
-						robot.setColor(Color.ORANGE);
 					}
-				} else {
+				} 
+				else {
 					// If robots are not nearby ensure the colour value is
 					// correct.
 					robot.setIsNear(false);
 				}
 			} else if (e instanceof Food) {
-				if (robot.foodNeed()) {
+				if(e == goal)
+				{
+					goal = null;
+				}
+				if (robot.needsFood()) {
 					Food f = (Food) e;
 					if (f.getStoredEnergy() > 0) {
 						f.interact(robot);
@@ -143,8 +156,91 @@ public class RobotConsciousness extends Thread {
 				}
 			}
 		}
+		
+		
 	}
 
+	public boolean setEntityGoal(int robotX, int robotY)
+	{
+		if(goal == null)
+		{
+			System.out.println("No goal set. Finding new Goal..");
+			// No goal has been set, so it's time to look for one.
+			int perceptionBoundary = 200;
+			ArrayList<Entity> entities = robot.getNearEntities(
+					robotX - perceptionBoundary,
+					robotX + perceptionBoundary,
+					robotY - perceptionBoundary,
+					robotY + perceptionBoundary);
+			
+			if(entities.size() > 0)
+			{
+				int index = 0;
+				while(index < entities.size() && !(entities.get(index) instanceof Food))
+				{
+					index++;
+				}
+				if(index < entities.size()) {
+					// Grab the food goal. No point hording with other robots.
+					goal = entities.get(index);
+				}
+				// Set the direction to the food goal.
+				return setDirectionToGoal(goal);
+			}
+		}
+		else
+		{
+			System.out.println("Goal set. Plotting path to goal");
+			// Goal has already been found, and we need to get close to it.
+			return setDirectionToGoal(goal);
+		}
+		
+		return false;
+	}
+	
+	private boolean setDirectionToGoal(Entity goal)
+	{
+		if(goal instanceof Robot)
+		{
+			// Add code for robot based decision. We need to implement personalities before we can do this.
+			return false;
+		}
+		else if(goal instanceof Food)
+		{
+			if(robot.needsFood())
+			{
+				System.out.println("Made it to this point!");
+				Point foodPos = goal.getLocation();
+				// Get the difference between the two entities.
+				Point difference = new Point(robot.getLocation().x - foodPos.x, robot.getLocation().y - foodPos.y);
+				
+				if(difference.x > 0)
+				{
+					// Entity is on the left of the robot, so set direction to go 
+					dx = -1;
+				}
+				else
+				{
+					// Entity is on the right of the robot.
+					dx = 1;
+				}
+				
+				if(difference.y > 0)
+				{
+					// Entity is above the robot, so set direction to go up.
+					dy = -1;
+				}
+				else
+				{
+					// Entity is below the robot, so set direction to go down.
+					dy = 1;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
 	public void changeDirection(int stepCount) {
 		if (stepCount % decisionGapX == 0) {
 			dx = 0;

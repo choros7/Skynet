@@ -77,11 +77,10 @@ public class Robot extends JPanel implements Entity {
 				e.printStackTrace();
 			}
 		
-			g.setColor(robotColor);
 			if(showDetails)
 			{
 				// Prints out the robot's statistics.
-				g.setColor(robotColor);
+				g.setColor(Color.BLACK);
 				g.drawString("Name: " + name, this.getLocation().x + 20, this.getLocation().y - 15);
 				g.drawString("Energy Left:"  + energy, this.getLocation().x + 20, this.getLocation().y - 5);
 				g.drawString("X: " + this.getLocation().x + " Y: " + this.getLocation().y, this.getLocation().x + 20, this.getLocation().y + 5);
@@ -97,7 +96,7 @@ public class Robot extends JPanel implements Entity {
 	 * @param y2
 	 * @return
 	 */
-	public ArrayList<Entity> getNearRobots(int x1, int x2, int y1, int y2)
+	public ArrayList<Entity> getNearEntities(int x1, int x2, int y1, int y2)
 	{
 		return parent.getObjectInRange(x1, x2, y1, y2);
 	}
@@ -171,7 +170,7 @@ public class Robot extends JPanel implements Entity {
 			}
 			//If I don't know you... do something.
 			if(!knowYou){
-				System.out.println(name + " says Good morning to" + ((Robot) other).getName());
+				//System.out.println(name + " says Good morning to" + ((Robot) other).getName());
 				tempMemory.add(other);
 			}
 			
@@ -187,8 +186,14 @@ public class Robot extends JPanel implements Entity {
 		return this.maxEnergy;
 	}
 	
-	public boolean foodNeed(){
-		if(this.energy < this.maxEnergy / 2)
+	public boolean needsFood(){
+		// Editted: This means robots will only feed until they are half full.
+		// Ammended so robots will always feed until they are full. 
+		
+		/**
+		 * In the future we can use the "fear" value to override this. 
+		 */
+		if(this.energy < this.maxEnergy)
 			return true;
 		else
 			return false;
@@ -212,7 +217,6 @@ public class Robot extends JPanel implements Entity {
 	public void checkInteractions(ArrayList<Entity> entitiesInRange){
 		ArrayList<Entity> newMemory = new ArrayList<Entity>();
 		for(Entity r: tempMemory){
-			//here I am trying to figure out the algorithm for forgetting...
 			for(Entity e : entitiesInRange)
 			{
 				if(e == r)
