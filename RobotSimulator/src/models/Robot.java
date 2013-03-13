@@ -19,8 +19,6 @@ public class Robot extends JPanel implements Entity {
 	
 	private RobotConsciousness thread;
 	// The robot's brain. Applies changes to the robot as it moves around.
-	private Stage parent;
-	// The stage the robot is in.
 	private Color robotColor;
 	// The color of the robot. 
 	private String name;
@@ -46,11 +44,10 @@ public class Robot extends JPanel implements Entity {
 	 * @param name Name of the robot
 	 * @param energyDecrement Robot's energy usages
 	 */
-	public Robot(int x, int y, Stage parent, String name, int energyDecrement, int perception) {
+	public Robot(int x, int y, Stage parent, String name,  int energyDecrement, int perception) {
 		this.setBounds(x,y,30,30);
-		thread = new RobotConsciousness(this);
+		thread = new RobotConsciousness(this, parent);
 		super.setSize(100,100);
-		this.parent = parent;
 		this.robotColor = Color.GREEN;
 		this.name = name;
 		this.isNear = false;
@@ -86,19 +83,6 @@ public class Robot extends JPanel implements Entity {
 				g.drawString("X: " + this.getLocation().x + " Y: " + this.getLocation().y, this.getLocation().x + 20, this.getLocation().y + 5);
 			}
 		}
-	}
-	
-	/**
-	 * proxy method to access the method in the stage object.
-	 * @param x1
-	 * @param x2
-	 * @param y1
-	 * @param y2
-	 * @return
-	 */
-	public ArrayList<Entity> getNearEntities(int x1, int x2, int y1, int y2)
-	{
-		return parent.getObjectInRange(x1, x2, y1, y2);
 	}
 	
 	public void setColor(Color robotColor)

@@ -5,49 +5,43 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
+import views.Stage;
+
 import models.Entity;
 import models.Food;
 import models.Robot;
 
 public class RobotConsciousness extends Thread {
 
-	private Random randNum;
 	// Random number generator.
 	private Robot robot;
 	// The robot who's consciousness this thread represents.
-	int dx;
+	private int dx;
 	// The distance each step is on the x axis.
-	int dy;
+	private int dy;
 	// The distance each step is on the y axis.
-	int decisionGapX;
-	// How often the robot decides to change the x direction.
-	int decisionGapY;
-	// How often the robot decides to change the y direction.
-	int previousEnergy;
+	private int previousEnergy;
 	// The robot's energy level on it's last iteration. For feeding.
-	Robot currentInteraction;
-	// The robot this robot is currently interacting with.
-	Entity goal;
+	private Entity goal;
 	// When a goal is found to move to, it is set here.
-
-	public RobotConsciousness(Robot r) {
+	private RobotPathFinder pathFinder;
+	// The pathfinding class used to traverse the stage to get to goals.
+    private RobotPerception perception;
+    // The robot's interface with the external world.
+    
+	public RobotConsciousness(Robot r, Stage world) {
 		this.robot = r;
-		randNum = new Random();
-		decisionGapX = 200;
-		decisionGapY = 200;
-		// Add some initial values for decision gaps.
-		changeDirection(0);
 		// Sets initial direction for the robots.
 		previousEnergy = robot.getEnergy();
 		goal = null;
+		pathFinder = new RobotPathFinder(this);
+		perception = new RobotPerception(this,world);
+		pathFinder.changeDirection(0);
 	}
 
 	public void run() {
 		int stepCount = 0;
 
-		
-		decisionGapX = 200 + randNum.nextInt(200);
-		decisionGapY = 200 + randNum.nextInt(200);
 
 		while (robot.isAlive()) {
 
@@ -55,42 +49,32 @@ public class RobotConsciousness extends Thread {
 			int robotY = robot.getLocation().y;
 			// Grab the current location of the robot.
 
-			// Apply the necessary changes if another robot is nearby.
 			stepCount++;
 
 			if(!setEntityGoal(robot.getLocation().x, robot.getLocation().y))
 			{
 				// if no goal was found, walk in random direction.
-				changeDirection(stepCount);
+				pathFinder.changeDirection(stepCount);
 			}
-			
 			checkProximity(robotX, robotY);
-
-			
 			// Change direction if timer is up.
 			if ((robotX >= 950 || robotX <= 0)) {
 				dx *= -1;
 				// Reverse X direction if reaching boundaries.
-
 			}
-
 			if (robotY >= 450 || robotY <= 0) {
 				dy *= -1;
 				// Reverse Y direction if reaching boundaries.
-
 			}
 			// Set the new location of the robot.
-
 			robot.setLocation(new Point(robotX + dx, robotY + dy));
 			if (dx != 0 || dy != 0) {
 				robot.decrementEnergy();
 				// If robot is moving, then robot is using energy.
 			}
-
 			if (!robot.isAlive()) {
 				robot.setColor(Color.BLACK);
 			}
-
 			previousEnergy = robot.getEnergy();
 			try {
 				// Sleep the thread for 40ms, so they don't move too quickly.
@@ -107,7 +91,7 @@ public class RobotConsciousness extends Thread {
 		// Will grab all entities that can be interacted with.
 		int perceptionBoundary = robot.getPerception() / 2;
 		
-		ArrayList<Entity> entities = robot.getNearEntities(
+		ArrayList<Entity> entities = perception.getNearEntities(
 										robotX - perceptionBoundary,
 										robotX + perceptionBoundary,
 										robotY - perceptionBoundary,
@@ -164,10 +148,9 @@ public class RobotConsciousness extends Thread {
 	{
 		if(goal == null)
 		{
-			System.out.println("No goal set. Finding new Goal..");
 			// No goal has been set, so it's time to look for one.
 			int perceptionBoundary = 200;
-			ArrayList<Entity> entities = robot.getNearEntities(
+			ArrayList<Entity> entities = perception.getNearEntities(
 					robotX - perceptionBoundary,
 					robotX + perceptionBoundary,
 					robotY - perceptionBoundary,
@@ -185,87 +168,42 @@ public class RobotConsciousness extends Thread {
 					goal = entities.get(index);
 				}
 				// Set the direction to the food goal.
-				return setDirectionToGoal(goal);
+				return pathFinder.setDirectionToGoal(goal);
 			}
 		}
 		else
 		{
-			System.out.println("Goal set. Plotting path to goal");
 			// Goal has already been found, and we need to get close to it.
-			return setDirectionToGoal(goal);
+			return pathFinder.setDirectionToGoal(goal);
 		}
 		
 		return false;
 	}
+		
 	
-	private boolean setDirectionToGoal(Entity goal)
+	
+	public void setDx(int dx)
 	{
-		if(goal instanceof Robot)
-		{
-			// Add code for robot based decision. We need to implement personalities before we can do this.
-			return false;
-		}
-		else if(goal instanceof Food)
-		{
-			if(robot.needsFood())
-			{
-				System.out.println("Made it to this point!");
-				Point foodPos = goal.getLocation();
-				// Get the difference between the two entities.
-				Point difference = new Point(robot.getLocation().x - foodPos.x, robot.getLocation().y - foodPos.y);
-				
-				if(difference.x > 0)
-				{
-					// Entity is on the left of the robot, so set direction to go 
-					dx = -1;
-				}
-				else
-				{
-					// Entity is on the right of the robot.
-					dx = 1;
-				}
-				
-				if(difference.y > 0)
-				{
-					// Entity is above the robot, so set direction to go up.
-					dy = -1;
-				}
-				else
-				{
-					// Entity is below the robot, so set direction to go down.
-					dy = 1;
-				}
-			}
-			return true;
-		}
-		return false;
+		this.dx = dx;
 	}
 	
-	public void changeDirection(int stepCount) {
-		if (stepCount % decisionGapX == 0) {
-			dx = 0;
-			if (decisionGapX % 2 == 0) {
-				int difference = randNum.nextInt(2);
-				dx = dx - difference != 0 ? difference : -1;
-
-			} else {
-				int difference = randNum.nextInt(2);
-				dx = dx + difference != 0 ? difference : -1;
-			}
-
-			decisionGapX = 200 + randNum.nextInt(200);
-		}
-
-		if (stepCount % decisionGapY == 0) {
-			dy = 0;
-			if (decisionGapY % 2 == 0) {
-				dy = dy - randNum.nextInt(2);
-			} else {
-				dy = dy + randNum.nextInt(2);
-			}
-
-			decisionGapY = 200 + randNum.nextInt(200);
-		}
+	public int getDx()
+	{
+		return dx;
 	}
-
+	
+	public void setDy(int dy)
+	{
+		this.dy = dy;
+	}
+	
+	public int getDy()
+	{
+		return dy;
+	}
+	
+	public Point getLocation()
+	{
+		return robot.getLocation();
+	}
 }
