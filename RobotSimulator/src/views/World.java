@@ -27,6 +27,7 @@ public class World extends JFrame {
 	 
 	public World()
 	{
+		this.setTitle("Skynet");
 		this.setBackground(Color.BLACK);
 		stage = new Stage(this);
 		thread = new RepaintThread(stage);

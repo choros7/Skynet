@@ -51,6 +51,7 @@ public class Stage extends JPanel {
 				((Robot) r).activateRobot();
 		}
 	}
+	
 	public void paint(Graphics g)
 	{
 		painting = true;

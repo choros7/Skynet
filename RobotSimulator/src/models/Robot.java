@@ -80,7 +80,7 @@ public class Robot extends JPanel implements Entity {
 			if(showDetails)
 			{
 				// Prints out the robot's statistics.
-				g.setColor(Color.BLACK);
+				g.setColor(robotColor);
 				g.drawString("Name: " + name, this.getLocation().x + 20, this.getLocation().y - 15);
 				g.drawString("Energy Left:"  + energy, this.getLocation().x + 20, this.getLocation().y - 5);
 				g.drawString("X: " + this.getLocation().x + " Y: " + this.getLocation().y, this.getLocation().x + 20, this.getLocation().y + 5);

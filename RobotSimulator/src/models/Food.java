@@ -51,7 +51,7 @@ public class Food extends Component implements Entity {
 			this.storedEnergy--;
 		}
 		
-		if(storedEnergy == 0)
+		if(storedEnergy <= 0)
 		{
 			stage.removeEntity(this);
 		}
