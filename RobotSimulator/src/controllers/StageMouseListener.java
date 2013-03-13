@@ -10,14 +10,37 @@ public class StageMouseListener implements MouseListener {
 
 	private Stage stage;
 	
+	
 	public StageMouseListener(Stage stage)
 	{
 		this.stage = stage;
 	}
 
+	/**
+	 * Possible action:
+	 * 0. Default click;
+	 * 1. Add food;
+	 * +++ robots are added at random locations and we do not need a mouse action for that.
+	 * 2. Hammer;
+	 * 3. ???
+	 * 4. Profit.
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		stage.showEntityAtCoordsDetails(e.getX(), e.getY());
+		switch(stage.getMouseAction()){
+			case 0:
+				stage.showEntityAtCoordsDetails(e.getX(), e.getY());
+				break;
+			case 1:
+				stage.insertFood(e.getX() - 25, e.getY() - 25);
+				stage.setMouseAction(0);
+				break;
+			case 2:
+				break;
+			default:
+				break;
+		}
+		
 		
 	}
 
@@ -45,6 +68,4 @@ public class StageMouseListener implements MouseListener {
 		
 	}
 	
-	
-
 }

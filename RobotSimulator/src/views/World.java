@@ -23,7 +23,6 @@ public class World extends JFrame {
 	
 	 private Stage stage;
 	 RepaintThread thread;
-	 private JButton button;
 	 
 	public World()
 	{
@@ -40,27 +39,11 @@ public class World extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		thread.start();
 		
-		button = new JButton("Add Robot!");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				stage.insertRobot(JOptionPane.showInputDialog("Insert the robot's name!"));
-			}
-		});
-		button.setBounds(600, 500, 100, 50);
-		button.setVisible(true);
-		this.add(button);
+		buttonAddRobot();
+		buttonAddFood();
+		buttonHammer();
 		
-		JButton foodButton = new JButton("Add Food!");
-		foodButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				stage.insertFood();
-			}
-		});
-		foodButton.setBounds(400,  500, 100, 50);
-		foodButton.setVisible(true);
-		this.add(foodButton);
+		
 	}
 	
 	public void paint(Graphics g)
@@ -72,6 +55,48 @@ public class World extends JFrame {
 	public Robot getRobot()
 	{
 		return stage.getRobot();
+	}
+	
+	
+	
+	private void buttonAddFood(){
+		JButton foodButton = new JButton("Add Food!");
+		foodButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				stage.setMouseAction(1);
+
+			}
+		});
+		foodButton.setBounds(10,  500, 120, 50);
+		foodButton.setVisible(true);
+		this.add(foodButton);
+	}
+	
+	private void buttonAddRobot(){
+		JButton button = new JButton("Add Robot!");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				stage.insertRobot(JOptionPane.showInputDialog("Insert the robot's name!"));
+			}
+		});
+		button.setBounds(130, 500, 120, 50);
+		button.setVisible(true);
+		this.add(button);
+	}
+	
+	private void buttonHammer(){
+		JButton hammer = new JButton("Hammer");
+		hammer.setBounds(250, 500, 120, 50);
+		hammer.setVisible(true);
+		hammer.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				stage.setMouseAction(2);
+			}
+		});
+		
+		this.add(hammer);
 	}
 
 }

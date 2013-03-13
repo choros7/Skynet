@@ -24,6 +24,9 @@ public class Stage extends JPanel {
 	private World world;
 	// The JFrame the stage is housed in.
 	
+	//What action should the mouse perform on the stage;
+	private int mouseAction;
+	
 	public Stage(World world)
 	{
 		this.setSize(1000,500);
@@ -36,6 +39,7 @@ public class Stage extends JPanel {
 		this.entities = new ArrayList<Entity>();
 		// Initialise class membwers.
 		
+		this.mouseAction = 0;
 		//Adding a number of entities to the array...
 		for(int i = 1; i < 20; i++){
 			Random rX = new Random();
@@ -120,11 +124,11 @@ public class Stage extends JPanel {
 		entities.add(r);
 	}
 	
-	public void insertFood()
+	public void insertFood(int x, int y)
 	{
 		// Injects a food object into the stage at a random position.
 		Random rand = new Random();
-		Food f = new Food(10 + rand.nextInt(900), 10 + rand.nextInt(400),rand.nextInt(1000), this);
+		Food f = new Food(x, y,rand.nextInt(1000), this);
 		entities.add(0, f);
 	}
 	
@@ -134,6 +138,14 @@ public class Stage extends JPanel {
 		// Wait until not painting.
 		if(entities.contains(e))
 		entities.remove(e);
+	}
+	
+	public void setMouseAction(int action){
+		this.mouseAction = action;
+	}
+	
+	public int getMouseAction(){
+		return this.mouseAction;
 	}
 
 }
