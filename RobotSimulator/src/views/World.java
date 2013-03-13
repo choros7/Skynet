@@ -65,7 +65,6 @@ public class World extends JFrame {
 			public void actionPerformed(ActionEvent e)
 			{
 				stage.setMouseAction(1);
-
 			}
 		});
 		foodButton.setBounds(10,  500, 120, 50);

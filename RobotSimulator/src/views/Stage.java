@@ -141,7 +141,18 @@ public class Stage extends JPanel {
 	}
 	
 	public void setMouseAction(int action){
+		switch(action)
+		{
+		case 1:
+			Random r = new Random();
+			insertFood(r.nextInt(500), r.nextInt(500));
+			break;
+		case 2:
+			// Insert code for Hammer
+			break;
+		}
 		this.mouseAction = action;
+		
 	}
 	
 	public int getMouseAction(){
